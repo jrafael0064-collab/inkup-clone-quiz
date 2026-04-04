@@ -38,7 +38,20 @@ export default function QuizPage() {
 
     fetchQuiz()
   }, [id])
+  // TEST TEMPORAL
+  useEffect(() => {
+    const testConnection = async () => {
+      const { data, error } = await supabase
+        .from('quizzes')
+        .select('*')
 
+      console.log('QUIZZES EN SUPABASE:', data)
+      console.log('ERROR:', error)
+    }
+
+    testConnection()
+  }, [])  
+  
   const handleChange = (qId, value) => {
     setAnswers({ ...answers, [qId]: value })
   }
