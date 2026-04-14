@@ -80,3 +80,19 @@ NEXT\_PUBLIC\_SUPABASE\_URL=https://tmsbgqnqpcvnlvjnzsrj.supabase.co
 
 NEXT\_PUBLIC\_SUPABASE\_PUBLISHABLE\_DEFAULT\_KEY=sb\_publishable\_9WcnQFUSAqxXg1CvNHb\_YA\_DprzhI4-
 
+
+
+### on line
+
+
+
+https://inkup-clone-quiz.vercel.app/admin
+
+
+
+https://inkup-clone-quiz.vercel.app/quiz/40799d7f-ff43-4406-95a5-24652e96f316
+
+
+
+https://inkup-clone-quiz.vercel.app/admin/quiz/40799d7f-ff43-4406-95a5-24652e96f316
+

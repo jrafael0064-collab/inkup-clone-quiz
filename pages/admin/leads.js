@@ -8,6 +8,8 @@ export default function AdminLeads() {
   const [toDate, setToDate] = useState("")
   const [selectedQuizId, setSelectedQuizId] = useState("")
   const [selectedStatus, setSelectedStatus] = useState("")
+  const [aiResults, setAiResults] = useState({})
+  const [loadingAiId, setLoadingAiId] = useState(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,6 +58,42 @@ export default function AdminLeads() {
     )
   }
 
+  const generateProposal = async (lead) => {
+    try {
+      setLoadingAiId(lead.id)
+
+      const response = await fetch("/api/generate-proposal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          quizTitle: quizzes.find((q) => q.id === lead.quiz_id)?.title || "Quiz",
+          answers: lead.data || {},
+          leadName: lead.name || "",
+          leadPhone: lead.phone || ""
+        })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        alert(data.error || "Error generando propuesta IA")
+        return
+      }
+
+      setAiResults((prev) => ({
+        ...prev,
+        [lead.id]: data
+      }))
+    } catch (error) {
+      console.error(error)
+      alert("Error generando propuesta IA")
+    } finally {
+      setLoadingAiId(null)
+    }
+  }
+
   const getStatusColor = (status) => {
     if (status === "nuevo") return "#3182ce"
     if (status === "contactado") return "#d69e2e"
@@ -77,12 +115,13 @@ export default function AdminLeads() {
     return true
   })
 
-  const newCount = filteredLeads.filter((lead) => (lead.status || "nuevo") === "nuevo").length
-  const contactedCount = filteredLeads.filter((lead) => lead.status === "contactado").length
-  const closedCount = filteredLeads.filter((lead) => lead.status === "cerrado").length
   const sortedLeads = [...filteredLeads].sort((a, b) => {
     return new Date(b.created_at) - new Date(a.created_at)
   })
+
+  const newCount = filteredLeads.filter((lead) => (lead.status || "nuevo") === "nuevo").length
+  const contactedCount = filteredLeads.filter((lead) => lead.status === "contactado").length
+  const closedCount = filteredLeads.filter((lead) => lead.status === "cerrado").length
 
   return (
     <div style={{ padding: 30, background: "#f7fafc", minHeight: "100vh" }}>
@@ -96,50 +135,22 @@ export default function AdminLeads() {
           marginBottom: 24
         }}
       >
-        <div
-          style={{
-            background: "#fff",
-            padding: 16,
-            borderRadius: 12,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
-          }}
-        >
+        <div style={{ background: "#fff", padding: 16, borderRadius: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
           <p style={{ margin: 0, color: "#718096" }}>Nuevos</p>
           <h2 style={{ margin: "8px 0 0", color: "#3182ce" }}>{newCount}</h2>
         </div>
 
-        <div
-          style={{
-            background: "#fff",
-            padding: 16,
-            borderRadius: 12,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
-          }}
-        >
+        <div style={{ background: "#fff", padding: 16, borderRadius: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
           <p style={{ margin: 0, color: "#718096" }}>Contactados</p>
           <h2 style={{ margin: "8px 0 0", color: "#d69e2e" }}>{contactedCount}</h2>
         </div>
 
-        <div
-          style={{
-            background: "#fff",
-            padding: 16,
-            borderRadius: 12,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
-          }}
-        >
+        <div style={{ background: "#fff", padding: 16, borderRadius: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
           <p style={{ margin: 0, color: "#718096" }}>Cerrados</p>
           <h2 style={{ margin: "8px 0 0", color: "#38a169" }}>{closedCount}</h2>
         </div>
 
-        <div
-          style={{
-            background: "#fff",
-            padding: 16,
-            borderRadius: 12,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
-          }}
-        >
+        <div style={{ background: "#fff", padding: 16, borderRadius: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
           <p style={{ margin: 0, color: "#718096" }}>Total</p>
           <h2 style={{ margin: "8px 0 0", color: "#2d3748" }}>{filteredLeads.length}</h2>
         </div>
@@ -162,11 +173,7 @@ export default function AdminLeads() {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            style={{
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #cbd5e0"
-            }}
+            style={{ padding: 10, borderRadius: 8, border: "1px solid #cbd5e0" }}
           />
         </div>
 
@@ -178,11 +185,7 @@ export default function AdminLeads() {
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            style={{
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #cbd5e0"
-            }}
+            style={{ padding: 10, borderRadius: 8, border: "1px solid #cbd5e0" }}
           />
         </div>
 
@@ -193,12 +196,7 @@ export default function AdminLeads() {
           <select
             value={selectedQuizId}
             onChange={(e) => setSelectedQuizId(e.target.value)}
-            style={{
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #cbd5e0",
-              minWidth: 220
-            }}
+            style={{ padding: 10, borderRadius: 8, border: "1px solid #cbd5e0", minWidth: 220 }}
           >
             <option value="">Todos los quizzes</option>
             {quizzes.map((quiz) => (
@@ -216,12 +214,7 @@ export default function AdminLeads() {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            style={{
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #cbd5e0",
-              minWidth: 180
-            }}
+            style={{ padding: 10, borderRadius: 8, border: "1px solid #cbd5e0", minWidth: 180 }}
           >
             <option value="">Todos</option>
             <option value="nuevo">🆕 Nuevo</option>
@@ -255,7 +248,7 @@ export default function AdminLeads() {
         Mostrando {filteredLeads.length} lead{filteredLeads.length === 1 ? "" : "s"}
       </p>
 
-      {filteredLeads.length === 0 ? (
+      {sortedLeads.length === 0 ? (
         <p>No hay leads con esos filtros</p>
       ) : (
         sortedLeads.map((lead) => (
@@ -333,6 +326,21 @@ export default function AdminLeads() {
               >
                 Copiar número
               </button>
+
+              <button
+                onClick={() => generateProposal(lead)}
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: 8,
+                  background: "#2d3748",
+                  color: "#fff",
+                  border: "none",
+                  cursor: "pointer",
+                  fontWeight: "bold"
+                }}
+              >
+                {loadingAiId === lead.id ? "Generando..." : "Generar propuesta IA"}
+              </button>
             </div>
 
             <p style={{ marginTop: 12 }}>
@@ -341,13 +349,52 @@ export default function AdminLeads() {
 
             <div style={{ marginTop: 10 }}>
               <strong>Respuestas:</strong>
-
               {Object.entries(lead.data || {}).map(([qId, value]) => (
                 <p key={qId} style={{ marginLeft: 10 }}>
                   • {String(value)}
                 </p>
               ))}
             </div>
+
+            {aiResults[lead.id] && (
+              <div
+                style={{
+                  marginTop: 16,
+                  padding: 14,
+                  borderRadius: 10,
+                  background: "#f8fafc",
+                  border: "1px solid #e2e8f0"
+                }}
+              >
+                <p style={{ marginBottom: 8 }}>
+                  <strong>Perfil detectado:</strong> {aiResults[lead.id].client_profile}
+                </p>
+
+                <p style={{ marginBottom: 8 }}>
+                  <strong>Dirección de diseño:</strong> {aiResults[lead.id].design_direction}
+                </p>
+
+                <p style={{ marginBottom: 8 }}>
+                  <strong>Notas profesionales:</strong> {aiResults[lead.id].professional_notes}
+                </p>
+
+                <div style={{ marginTop: 12 }}>
+                  <strong>Respuesta sugerida para WhatsApp:</strong>
+                  <div
+                    style={{
+                      marginTop: 8,
+                      padding: 12,
+                      borderRadius: 8,
+                      background: "#fff",
+                      border: "1px solid #cbd5e0",
+                      whiteSpace: "pre-wrap"
+                    }}
+                  >
+                    {aiResults[lead.id].whatsapp_reply}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ))
       )}
