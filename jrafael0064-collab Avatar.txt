@@ -1,0 +1,38 @@
+jrafael0064-collab Avatar
+jrafael0064-collab
+3m ago
+Status
+Ready
+Latest
+Duration
+3s
+3m ago
+Environment
+Production
+Current
+Domains
+inkup-clone-quiz.vercel.app
++1
+inkup-clone-quiz-git-main-jrafael0064-collabs-projects.vercel.app
+inkup-clone-quiz-r5x9qlwbj-jrafael0064-collabs-projects.vercel.app
+Source
+main
+f3d11eb
+Refactor supabase client initialization
+
+-------------------------------------------
+
+Deployment
+inkup-clone-quiz-2wnqp0n89-jrafael0064-collabs-projects.vercel.app
+Domains
+inkup-clone-quiz.vercel.app
+Status
+Ready
+Created
+16m ago by jrafael0064-collab
+
+github/jrafael0064-collab
+Source
+main
+7a9bc47
+Fix formatting and ensure newline at end of file
