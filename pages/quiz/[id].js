@@ -138,74 +138,75 @@ export default function QuizPage() {
   }
 
   const handleSubmit = async () => {
+
     if (!sessionId) {
-      alert('No se pudo generar la sesión del usuario')
+      alert("No se pudo generar la sesión del usuario")
       return
     }
 
-    if (!leadName.trim()) {
-      alert('Por favor, escribe tu nombre.')
+    // ✅ TELÉFONO DESDE SUPABASE
+    const phoneNumber = (quiz.phone || "").replace(/\D/g, "")
+
+    if (!phoneNumber) {
+      alert("Este quiz no tiene número configurado")
       return
     }
 
-    if (leadPhone.length < 9) {
-      alert('Introduce un WhatsApp válido')
-      return
-    }
-
+    // ✅ VALIDAR RESPUESTAS
     const unansweredQuestions = questions.filter((q) => {
       const value = answers[q.id]
-      return value === undefined || value === null || value === ''
+      return value === undefined || value === null || value === ""
     })
 
     if (unansweredQuestions.length > 0) {
-      alert('Por favor, responde todas las preguntas antes de enviar.')
+      alert("Por favor, responde todas las preguntas antes de enviar.")
       return
     }
 
+    // ✅ GUARDAR EN SUPABASE
     const { error } = await supabase
-      .from('answers')
+      .from("answers")
       .insert([
         {
           quiz_id: id,
           session_id: sessionId,
-          data: answers,
           name: leadName,
-          phone: leadPhone
+          phone: leadPhone,
+          data: answers
         }
       ])
 
     if (error) {
-      alert('Error: ' + error.message)
+      alert("Error: " + error.message)
       return
     }
 
+    // ✅ LIMPIAR STORAGE
     localStorage.removeItem(`quiz_answers_${id}`)
     localStorage.removeItem(`quiz_session_${id}`)
-    localStorage.removeItem(`quiz_lead_name_${id}`)
-    localStorage.removeItem(`quiz_lead_phone_${id}`)
 
     setSubmitted(true)
 
-    let msg = `Hola! 👋 He completado el quiz de "${quiz.title}" y me gustaría recibir mi propuesta personalizada.%0A%0A`
+    // ✅ MENSAJE WHATSAPP (MEJORADO)
+    let msg = `Hola! 👋 He completado el quiz de "${quiz.title}" y me gustaría que me orientaras con una propuesta de tatuaje.%0A%0A`
 
     msg += `🧑 Nombre: ${leadName}%0A`
     msg += `📱 WhatsApp: ${leadPhone}%0A%0A`
 
-    msg += `📋 Mis respuestas:%0A`
+    msg += `💡 Idea que tengo:%0A`
 
     Object.keys(answers).forEach((qId) => {
       const q = questions.find((qq) => String(qq.id) === String(qId))
       if (q) {
-        msg += `• ${q.question}: ${answers[qId]}%0A`
+        msg += `• ${answers[qId]}%0A`
       }
     })
 
-    msg += `%0A🔥 Busco algo que encaje bien con mi idea, ¿qué me recomendarías?`
+    msg += `%0A🔥 Busco algo que encaje bien conmigo, ¿cómo lo harías tú?`
 
-    const phoneNumber = '+34670592138'
+    // ✅ ABRIR WHATSAPP CON EL TELÉFONO DEL QUIZ
     const url = `https://wa.me/${phoneNumber}?text=${msg}`
-    window.open(url, '_blank')
+    window.open(url, "_blank")
   }
 
   const allAnswered =

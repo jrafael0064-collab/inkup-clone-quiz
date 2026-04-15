@@ -94,6 +94,42 @@ export default function AdminLeads() {
     }
   }
 
+  const copyAiReply = async (leadId) => {
+    const reply = aiResults[leadId]?.whatsapp_reply
+
+    if (!reply) {
+      alert("Primero genera una propuesta IA")
+      return
+    }
+
+    try {
+      await navigator.clipboard.writeText(reply)
+      alert("Respuesta IA copiada")
+    } catch (error) {
+      console.error(error)
+      alert("No se pudo copiar la respuesta")
+    }
+  }
+
+  const openWhatsAppWithAiReply = (lead) => {
+    const reply = aiResults[lead.id]?.whatsapp_reply
+
+    if (!reply) {
+      alert("Primero genera una propuesta IA")
+      return
+    }
+
+    const cleanPhone = String(lead.phone || "").replace(/\D/g, "")
+
+    if (!cleanPhone) {
+      alert("Este lead no tiene teléfono")
+      return
+    }
+
+    const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(reply)}`
+    window.open(url, "_blank")
+  }
+
   const getStatusColor = (status) => {
     if (status === "nuevo") return "#3182ce"
     if (status === "contactado") return "#d69e2e"
@@ -340,6 +376,36 @@ export default function AdminLeads() {
                 }}
               >
                 {loadingAiId === lead.id ? "Generando..." : "Generar propuesta IA"}
+              </button>
+
+              <button
+                onClick={() => copyAiReply(lead.id)}
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: 8,
+                  background: "#805ad5",
+                  color: "#fff",
+                  border: "none",
+                  cursor: "pointer",
+                  fontWeight: "bold"
+                }}
+              >
+                Copiar respuesta IA
+              </button>
+
+              <button
+                onClick={() => openWhatsAppWithAiReply(lead)}
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: 8,
+                  background: "#dd6b20",
+                  color: "#fff",
+                  border: "none",
+                  cursor: "pointer",
+                  fontWeight: "bold"
+                }}
+              >
+                WhatsApp con IA
               </button>
             </div>
 
