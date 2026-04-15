@@ -336,8 +336,19 @@ export default function QuizPage() {
           fontFamily: 'Arial, sans-serif',
           background: 'linear-gradient(120deg, #fefefe, #e2e8f0)',
           minHeight: '100vh'
-        }}
-      >
+        }}>
+          <div style={{
+            textAlign: "center",
+            marginBottom: 30
+          }}>
+            <h2 style={{ fontSize: 24 }}>
+              Descubre qué tatuaje encaja contigo 🎯
+            </h2>
+
+            <p style={{ color: "#4a5568", marginTop: 10 }}>
+              Responde este test y te orientaré con una propuesta real basada en tu estilo
+            </p>
+          </div>
         <h1 style={{ textAlign: 'center', color: '#2d3748' }}>{quiz.title}</h1>
         <p style={{ textAlign: 'center', marginTop: 30 }}>
           Este quiz todavía no tiene preguntas.
