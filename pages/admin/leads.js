@@ -425,42 +425,54 @@ export default function AdminLeads() {
             {aiResults[lead.id] && (
               <div
                 style={{
-                  marginTop: 16,
-                  padding: 14,
-                  borderRadius: 10,
-                  background: "#f8fafc",
-                  border: "1px solid #e2e8f0"
-                }}
-              >
-                <p style={{ marginBottom: 8 }}>
-                  <strong>Perfil detectado:</strong> {aiResults[lead.id].client_profile}
-                </p>
+                marginTop: 16,
+                padding: 14,
+                borderRadius: 10,
+                background: "#f8fafc",
+                border: "1px solid #e2e8f0"
+              }}
+            >
+              <p style={{ marginBottom: 8 }}>
+                <strong>Perfil detectado:</strong> {aiResults[lead.id].client_profile}
+              </p>
 
-                <p style={{ marginBottom: 8 }}>
-                  <strong>Dirección de diseño:</strong> {aiResults[lead.id].design_direction}
-                </p>
+              <p style={{ marginBottom: 8 }}>
+                <strong>Dirección de diseño:</strong> {aiResults[lead.id].design_direction}
+              </p>
 
-                <p style={{ marginBottom: 8 }}>
-                  <strong>Notas profesionales:</strong> {aiResults[lead.id].professional_notes}
-                </p>
+              <p style={{ marginBottom: 8 }}>
+                <strong>Tamaño sugerido:</strong> {aiResults[lead.id].suggested_size}
+              </p>
 
-                <div style={{ marginTop: 12 }}>
-                  <strong>Respuesta sugerida para WhatsApp:</strong>
-                  <div
-                    style={{
-                      marginTop: 8,
-                      padding: 12,
-                      borderRadius: 8,
-                      background: "#fff",
-                      border: "1px solid #cbd5e0",
-                      whiteSpace: "pre-wrap"
-                    }}
-                  >
-                    {aiResults[lead.id].whatsapp_reply}
-                  </div>
+              <p style={{ marginBottom: 8 }}>
+                <strong>Zona recomendada:</strong> {aiResults[lead.id].suggested_body_area}
+              </p>
+
+              <p style={{ marginBottom: 8 }}>
+                <strong>Complejidad:</strong> {aiResults[lead.id].complexity_level}
+              </p>
+
+              <p style={{ marginBottom: 8 }}>
+                <strong>Notas profesionales:</strong> {aiResults[lead.id].professional_notes}
+              </p>
+ 
+              <div style={{ marginTop: 12 }}>
+                <strong>Respuesta sugerida para WhatsApp:</strong>
+                <div
+                  style={{
+                    marginTop: 8,
+                    padding: 12,
+                    borderRadius: 8,
+                    background: "#fff",
+                    border: "1px solid #cbd5e0",
+                    whiteSpace: "pre-wrap"
+                  }}
+                >
+                  {aiResults[lead.id].whatsapp_reply}
                 </div>
               </div>
-            )}
+            </div>
+          )}
           </div>
         ))
       )}
