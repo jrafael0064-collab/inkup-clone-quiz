@@ -116,5 +116,25 @@ https://getinkflow.vercel.app/admin/leads
 
 
 
+Después de cambiarlo
+
+
+
+Haz esto:
+
+
+
+git add .
+
+git commit -m "Actualizar branding visible a InkFlow"
+
+git push origin main --forcé
+
+
+
+
+
+
+
 
 

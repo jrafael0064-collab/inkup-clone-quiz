@@ -205,8 +205,13 @@ export default function QuizPage() {
     msg += `%0A🔥 Busco algo que encaje bien conmigo, ¿cómo lo harías tú?`
 
     // ✅ ABRIR WHATSAPP CON EL TELÉFONO DEL QUIZ
-    const url = `https://wa.me/${phoneNumber}?text=${msg}`
-    window.open(url, "_blank")
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+    const encodedMsg = encodeURIComponent(msg)
+    const url = isMobile
+      ? `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMsg}`
+      : `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMsg}`
+    // 👇 mejor para móvil
+    window.location.href = url
   }
 
   const allAnswered =
