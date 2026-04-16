@@ -59,6 +59,7 @@ export default function AdminLeads() {
       return
     }
 
+    // 👇 actualiza estado en UI sin recargar
     setLeads((prev) =>
       prev.map((lead) =>
         lead.id === id ? { ...lead, status: newStatus } : lead
@@ -119,7 +120,7 @@ export default function AdminLeads() {
     }
   }
 
-  const openWhatsAppWithAiReply = (lead) => {
+  const openWhatsAppWithAiReply = async (lead) => {
     const reply = aiResults[lead.id]?.whatsapp_reply
 
     if (!reply) {
@@ -134,8 +135,25 @@ export default function AdminLeads() {
       return
     }
 
-    const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(reply)}`
-    window.open(url, "_blank")
+    const url = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(reply)}`
+
+    const { error } = await supabase
+      .from("answers")
+      .update({ status: "contactado" })
+      .eq("id", lead.id)
+
+    if (error) {
+      alert("No se pudo actualizar el estado a contactado")
+      return
+    }
+
+    setLeads((prev) =>
+      prev.map((item) =>
+        item.id === lead.id ? { ...item, status: "contactado" } : item
+      )
+    )
+
+    window.location.href = url
   }
 
   const getStatusColor = (status) => {
@@ -159,7 +177,24 @@ export default function AdminLeads() {
     return true
   })
 
+  const statusPriority = {
+    nuevo: 0,
+    contactado: 1,
+    cerrado: 2,
+    archived: 3
+  }
+
   const sortedLeads = [...filteredLeads].sort((a, b) => {
+    const statusA = a.status || "nuevo"
+    const statusB = b.status || "nuevo"
+
+    const priorityA = statusPriority[statusA] ?? 99
+    const priorityB = statusPriority[statusB] ?? 99
+
+    if (priorityA !== priorityB) {
+      return priorityA - priorityB
+    }
+
     return new Date(b.created_at) - new Date(a.created_at)
   })
 
