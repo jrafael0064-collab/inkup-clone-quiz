@@ -86,13 +86,35 @@ NEXT\_PUBLIC\_SUPABASE\_PUBLISHABLE\_DEFAULT\_KEY=sb\_publishable\_9WcnQFUSAqxXg
 
 
 
-https://inkup-clone-quiz.vercel.app/admin
+viejo-https://inkup-clone-quiz.vercel.app/admin
 
 
 
-https://inkup-clone-quiz.vercel.app/quiz/40799d7f-ff43-4406-95a5-24652e96f316
+viejo-https://inkup-clone-quiz.vercel.app/quiz/40799d7f-ff43-4406-95a5-24652e96f316
 
 
 
-https://inkup-clone-quiz.vercel.app/admin/quiz/40799d7f-ff43-4406-95a5-24652e96f316
+viejo-https://inkup-clone-quiz.vercel.app/admin/quiz/40799d7f-ff43-4406-95a5-24652e96f31
+
+
+
+
+
+https://getinkflow.vercel.app/admin
+
+
+
+https://getinkflow.vercel.app/quiz/1a11f611-787e-4748-ad0e-fae245f5512d
+
+
+
+https://getinkflow.vercel.app/admin/quiz/1a11f611-787e-4748-ad0e-fae245f5512d
+
+
+
+https://getinkflow.vercel.app/admin/leads
+
+
+
+
 

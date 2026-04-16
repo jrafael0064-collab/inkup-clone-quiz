@@ -427,16 +427,31 @@ export default function QuizPage() {
             marginBottom: 25
           }}
         >
-          <p
-            style={{
-              fontWeight: 'bold',
-              fontSize: 20,
-              marginBottom: 20,
-              color: '#1a202c'
+
+          {/* 👇 SOLO PRIMERA PREGUNTA */}
+          {currentQuestionIndex === 0 && (
+            <p
+              style={{
+              marginBottom: 16,
+              color: "#4a5568",
+              fontSize: 15,
+              lineHeight: 1.5
             }}
           >
-            {currentQuestion.question}
+            No hace falta que lo tengas claro del todo. Vamos a orientarlo contigo.
           </p>
+        )}
+
+        <p
+          style={{
+            fontWeight: 'bold',
+            fontSize: 20,
+            marginBottom: 20,
+            color: '#1a202c'
+          }}
+        >
+          {currentQuestion.question}
+        </p>
 
           {currentQuestion.type === 'multiple' ? (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
