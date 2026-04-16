@@ -13,9 +13,17 @@ export default function AdminLeads() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: leadsData, error: leadsError } = await supabase
+      let query = supabase
         .from("answers")
         .select("*")
+
+      if (selectedStatus) {
+        query = query.eq("status", selectedStatus)
+      } else {
+        query = query.neq("status", "archivados")
+      }
+
+      const { data: leadsData, error: leadsError } = await query
         .order("created_at", { ascending: false })
 
       if (leadsError) {
@@ -158,6 +166,7 @@ export default function AdminLeads() {
   const newCount = filteredLeads.filter((lead) => (lead.status || "nuevo") === "nuevo").length
   const contactedCount = filteredLeads.filter((lead) => lead.status === "contactado").length
   const closedCount = filteredLeads.filter((lead) => lead.status === "cerrado").length
+  const archivedCount = leads.filter((lead) => lead.status === "archived").length
 
   return (
     <div style={{ padding: 30, background: "#f7fafc", minHeight: "100vh" }}>
@@ -184,6 +193,11 @@ export default function AdminLeads() {
         <div style={{ background: "#fff", padding: 16, borderRadius: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
           <p style={{ margin: 0, color: "#718096" }}>Cerrados</p>
           <h2 style={{ margin: "8px 0 0", color: "#38a169" }}>{closedCount}</h2>
+        </div>
+
+        <div style={{ background: "#fff", padding: 16, borderRadius: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
+          <p style={{ margin: 0, color: "#718096" }}>Archivados</p>
+          <h2 style={{ margin: "8px 0 0", color: "#2d3748" }}>{archivedCount}</h2>
         </div>
 
         <div style={{ background: "#fff", padding: 16, borderRadius: 12, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}>
@@ -256,6 +270,7 @@ export default function AdminLeads() {
             <option value="nuevo">🆕 Nuevo</option>
             <option value="contactado">💬 Contactado</option>
             <option value="cerrado">✅ Cerrado</option>
+            <option value="archived">📦 Archivados</option>
           </select>
         </div>
 
@@ -407,6 +422,22 @@ export default function AdminLeads() {
               >
                 WhatsApp con IA
               </button>
+
+              <button
+                onClick={() => updateStatus(lead.id, "archived")}
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: 8,
+                  background: "#ecc94b",
+                  color: "#1a202c",
+                  border: "none",
+                  cursor: "pointer",
+                  fontWeight: "bold"
+                }}
+              >
+                📦 Archivar
+              </button>
+
             </div>
 
             <p style={{ marginTop: 12 }}>
