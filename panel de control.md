@@ -10,6 +10,10 @@ npm run dev
 
 
 
+##### ***contraseña ADMIN: InkFlow\_Admin\_2026!Segura+1***
+
+
+
 pagina main, quiz, admin
 
 
@@ -132,9 +136,5 @@ git push origin main --forcé
 
 
 
-
-
-
-
-
+\-------------------------------
 

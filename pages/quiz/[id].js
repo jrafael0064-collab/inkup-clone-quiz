@@ -173,6 +173,7 @@ export default function QuizPage() {
           name: leadName,
           phone: leadPhone,
           data: answers
+          status: "nuevo"
         }
       ])
 
