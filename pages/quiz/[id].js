@@ -172,7 +172,7 @@ export default function QuizPage() {
           session_id: sessionId,
           name: leadName,
           phone: leadPhone,
-          data: answers
+          data: answers,
           status: "nuevo"
         }
       ])
