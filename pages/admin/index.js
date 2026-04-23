@@ -6,6 +6,10 @@ export default function Admin() {
   const router = useRouter()
   const [quizzes, setQuizzes] = useState([])
   const [title, setTitle] = useState('')
+  const handleLogout = async () => {
+    await fetch("/api/admin-logout", { method: "POST" })
+    window.location.href = "/admin-login"
+  }
 
   useEffect(() => {
     loadQuizzes()
@@ -47,6 +51,24 @@ export default function Admin() {
         }}
       >
         Gestionar Resultados
+      </button>
+
+      <button
+        onClick={handleLogout}
+        style={{
+          position: "absolute",
+          top: 20,
+          right: 20,
+          padding: "8px 14px",
+          borderRadius: 8,
+          border: "none",
+          background: "#e53e3e",
+          color: "#fff",
+          fontWeight: "bold",
+          cursor: "pointer"
+        }}
+      >
+        Salir
       </button>
 
       <div style={{ marginBottom: 40 }}>
