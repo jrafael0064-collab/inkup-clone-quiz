@@ -86,6 +86,9 @@ export default function QuizPage() {
 
       setQuiz(quizData)
 
+      console.log("QUIZ DATA:", quizData)
+      console.log("LOGO URL:", quizData.logo_url)
+
       const { data: questionsData, error: questionsError } = await supabase
         .from('questions')
         .select('*, options(*)')
@@ -138,13 +141,11 @@ export default function QuizPage() {
   }
 
   const handleSubmit = async () => {
-
     if (!sessionId) {
       alert("No se pudo generar la sesión del usuario")
       return
     }
 
-    // ✅ TELÉFONO DESDE SUPABASE
     const phoneNumber = (quiz.phone || "").replace(/\D/g, "")
 
     if (!phoneNumber) {
@@ -152,7 +153,6 @@ export default function QuizPage() {
       return
     }
 
-    // ✅ VALIDAR RESPUESTAS
     const unansweredQuestions = questions.filter((q) => {
       const value = answers[q.id]
       return value === undefined || value === null || value === ""
@@ -163,7 +163,6 @@ export default function QuizPage() {
       return
     }
 
-    // ✅ GUARDAR EN SUPABASE
     const { error } = await supabase
       .from("answers")
       .insert([
@@ -182,18 +181,15 @@ export default function QuizPage() {
       return
     }
 
-    // ✅ LIMPIAR STORAGE
     localStorage.removeItem(`quiz_answers_${id}`)
     localStorage.removeItem(`quiz_session_${id}`)
 
     setSubmitted(true)
 
-    // ✅ MENSAJE WHATSAPP (MEJORADO)
     let msg = `Hola! 👋 He completado el quiz de "${quiz.title}" y me gustaría que me orientaras con una propuesta de tatuaje.%0A%0A`
 
     msg += `🧑 Nombre: ${leadName}%0A`
     msg += `📱 WhatsApp: ${leadPhone}%0A%0A`
-
     msg += `💡 Idea que tengo:%0A`
 
     Object.keys(answers).forEach((qId) => {
@@ -205,22 +201,14 @@ export default function QuizPage() {
 
     msg += `%0A🔥 Busco algo que encaje bien conmigo, ¿cómo lo harías tú?`
 
-    // ✅ ABRIR WHATSAPP CON EL TELÉFONO DEL QUIZ
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
     const encodedMsg = encodeURIComponent(msg)
     const url = isMobile
       ? `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMsg}`
       : `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMsg}`
-    // 👇 mejor para móvil
+
     window.location.href = url
   }
-
-  const allAnswered =
-    questions.length > 0 &&
-    questions.every((q) => {
-      const value = answers[q.id]
-      return value !== undefined && value !== null && value !== ''
-    })
 
   const currentQuestion = questions[currentQuestionIndex]
   const currentAnswer = currentQuestion ? answers[currentQuestion.id] : null
@@ -253,6 +241,34 @@ export default function QuizPage() {
             boxShadow: '0 6px 20px rgba(0,0,0,0.08)'
           }}
         >
+          {quiz.logo_url && (
+            <img
+              src={quiz.logo_url}
+              alt={quiz.brand_name || quiz.title}
+              style={{
+                display: "block",
+                margin: "0 auto 16px",
+                maxWidth: 140,
+                maxHeight: 100,
+                objectFit: "contain"
+              }}
+            />
+         
+          )}
+
+          {quiz.brand_name && (
+            <p
+              style={{
+                textAlign: "center",
+                color: "#718096",
+                fontWeight: "bold",
+                marginBottom: 10
+              }}
+            >
+              {quiz.brand_name}
+            </p>
+          )}
+
           <h2 style={{ textAlign: 'center', marginBottom: 20 }}>
             Ya casi está 👀
           </h2>
@@ -278,9 +294,9 @@ export default function QuizPage() {
             placeholder="WhatsApp"
             value={leadPhone}
             onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, '') // solo números
+              const value = e.target.value.replace(/\D/g, '')
               setLeadPhone(value)
-            }}   
+            }}
             style={{
               width: '100%',
               padding: 12,
@@ -342,20 +358,39 @@ export default function QuizPage() {
           fontFamily: 'Arial, sans-serif',
           background: 'linear-gradient(120deg, #fefefe, #e2e8f0)',
           minHeight: '100vh'
-        }}>
-          <div style={{
-            textAlign: "center",
-            marginBottom: 30
-          }}>
-            <h2 style={{ fontSize: 24 }}>
-              Descubre qué tatuaje encaja contigo 🎯
-            </h2>
+        }}
+      >
+        {quiz.logo_url && (
+          
+          <img
+            src={quiz.logo_url.trim()}
+            alt={quiz.brand_name || quiz.title}
+            style={{
+              display: "block",
+              margin: "0 auto 16px",
+              maxWidth: 140,
+              maxHeight: "auto",
+              objectFit: "contain"
+            }}
+          />
+          
+        )}
 
-            <p style={{ color: "#4a5568", marginTop: 10 }}>
-              Responde este test y te orientaré con una propuesta real basada en tu estilo
-            </p>
-          </div>
+        {quiz.brand_name && (
+          <p
+            style={{
+              textAlign: "center",
+              color: "#718096",
+              fontWeight: "bold",
+              marginBottom: 10
+            }}
+          >
+            {quiz.brand_name}
+          </p>
+        )}
+
         <h1 style={{ textAlign: 'center', color: '#2d3748' }}>{quiz.title}</h1>
+
         <p style={{ textAlign: 'center', marginTop: 30 }}>
           Este quiz todavía no tiene preguntas.
         </p>
@@ -385,6 +420,33 @@ export default function QuizPage() {
           boxShadow: '0 6px 20px rgba(0,0,0,0.08)'
         }}
       >
+        {quiz.logo_url && (
+          <img
+            src={quiz.logo_url}
+            alt={quiz.brand_name || quiz.title}
+            style={{
+              display: "block",
+              margin: "0 auto 16px",
+              maxWidth: 140,
+              maxHeight: 100,
+              objectFit: "contain"
+            }}
+          />
+        )}
+
+        {quiz.brand_name && (
+          <p
+            style={{
+              textAlign: "center",
+              color: "#718096",
+              fontWeight: "bold",
+              marginBottom: 10
+            }}
+          >
+            {quiz.brand_name}
+          </p>
+        )}
+
         <h1
           style={{
             textAlign: 'center',
@@ -433,31 +495,29 @@ export default function QuizPage() {
             marginBottom: 25
           }}
         >
-
-          {/* 👇 SOLO PRIMERA PREGUNTA */}
           {currentQuestionIndex === 0 && (
             <p
               style={{
-              marginBottom: 16,
-              color: "#4a5568",
-              fontSize: 15,
-              lineHeight: 1.5
+                marginBottom: 16,
+                color: "#4a5568",
+                fontSize: 15,
+                lineHeight: 1.5
+              }}
+            >
+              No hace falta que lo tengas claro del todo. Vamos a orientarlo contigo.
+            </p>
+          )}
+
+          <p
+            style={{
+              fontWeight: 'bold',
+              fontSize: 20,
+              marginBottom: 20,
+              color: '#1a202c'
             }}
           >
-            No hace falta que lo tengas claro del todo. Vamos a orientarlo contigo.
+            {currentQuestion.question}
           </p>
-        )}
-
-        <p
-          style={{
-            fontWeight: 'bold',
-            fontSize: 20,
-            marginBottom: 20,
-            color: '#1a202c'
-          }}
-        >
-          {currentQuestion.question}
-        </p>
 
           {currentQuestion.type === 'multiple' ? (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>

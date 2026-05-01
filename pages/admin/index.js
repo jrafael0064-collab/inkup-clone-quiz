@@ -6,6 +6,10 @@ export default function Admin() {
   const router = useRouter()
   const [quizzes, setQuizzes] = useState([])
   const [title, setTitle] = useState('')
+  const [brandName, setBrandName] = useState('')
+  const [logoUrl, setLogoUrl] = useState('')
+  const [logoFile, setLogoFile] = useState(null)
+
   const handleLogout = async () => {
     await fetch("/api/admin-logout", { method: "POST" })
     window.location.href = "/admin-login"
@@ -26,10 +30,38 @@ export default function Admin() {
 
   const createQuiz = async () => {
     if (!title) return alert('Escribe un título')
+
+    let uploadedLogoUrl = logoUrl
+
+    if (logoFile) {
+      const fileExt = logoFile.name.split('.').pop()
+      const fileName = `${Date.now()}.${fileExt}`
+      const filePath = `quiz-logos/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('logos')
+        .upload(filePath, logoFile)
+
+      if (uploadError) {
+        return alert('Error subiendo logo: ' + uploadError.message)
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from('logos')
+        .getPublicUrl(filePath)
+
+      uploadedLogoUrl = publicUrlData.publicUrl
+    }
+
     const { data, error } = await supabase
       .from('quizzes')
-      .insert([{ title }])
+      .insert([{
+        title,
+        brand_name: brandName,
+        logo_url: uploadedLogoUrl
+      }])
       .select()
+
     if (error) return alert(error.message)
 
     router.push(`/admin/quiz/${data[0].id}`)
@@ -73,12 +105,43 @@ export default function Admin() {
 
       <div style={{ marginBottom: 40 }}>
         <h2>Crear nuevo quiz</h2>
+
         <input
           placeholder="Título del quiz"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          style={{ padding: 10, marginRight: 10 }}
+          style={{ padding: 10, marginRight: 10, marginBottom: 10 }}
         />
+
+        <br />
+
+        <input
+          placeholder="Nombre de la marca"
+          value={brandName}
+          onChange={(e) => setBrandName(e.target.value)}
+          style={{ padding: 10, marginRight: 10, marginBottom: 10 }}
+        />
+
+        <br />
+
+        <input
+          type="file"
+          accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml"
+          onChange={(e) => setLogoFile(e.target.files[0])}
+          style={{ padding: 10, marginRight: 10, marginBottom: 10 }}
+        />
+
+        <br />
+
+        <input
+          placeholder="URL del logo"
+          value={logoUrl}
+          onChange={(e) => setLogoUrl(e.target.value)}
+          style={{ padding: 10, marginRight: 10, marginBottom: 10, width: 400 }}
+        />
+
+        <br />
+
         <button onClick={createQuiz}>Crear</button>
       </div>
 
@@ -88,13 +151,19 @@ export default function Admin() {
         {quizzes.map((quiz) => (
           <li key={quiz.id} style={{ marginBottom: 10 }}>
             {quiz.title}
+
+            {quiz.brand_name && (
+              <span style={{ marginLeft: 10, color: "#666" }}>
+                — {quiz.brand_name}
+              </span>
+            )}
+
             <button style={{ marginLeft: 10 }} onClick={() => router.push(`/admin/quiz/${quiz.id}`)}>
               Editar
             </button>
             <button style={{ marginLeft: 10 }} onClick={() => router.push(`/quiz/${quiz.id}`)}>
               Ver quiz
             </button>
-            
           </li>
         ))}
       </ul>
