@@ -163,7 +163,7 @@ export default function QuizPage() {
     }
 
     fetchQuiz()
-    }, [id])
+ }, [id])
 
 
   const handleChange = (qId, value) => {
