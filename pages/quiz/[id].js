@@ -2,6 +2,47 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useRouter } from 'next/router'
 
+import { useEffect, useState } from 'react'
+import { supabase } from '../../lib/supabase'
+import { useRouter } from 'next/router'
+
+const TEXTS = {
+  es: {
+    next: "Siguiente",
+    back: "Atrás",
+    continue: "Continuar",
+    question: "Pregunta",
+    of: "de",
+    loading: "Cargando quiz...",
+    noQuestions: "Este quiz todavía no tiene preguntas.",
+    almost: "Ya casi está 👀",
+    name: "Tu nombre",
+    whatsapp: "WhatsApp"
+  },
+  en: {
+    next: "Next",
+    back: "Back",
+    continue: "Continue",
+    question: "Question",
+    of: "of",
+    loading: "Loading quiz...",
+    noQuestions: "This quiz has no questions yet.",
+    almost: "Almost done 👀",
+    name: "Your name",
+    whatsapp: "WhatsApp"
+  }
+}
+
+const LANGUAGE_LABELS = {
+  es: "Español",
+  en: "English",
+  fr: "Français",
+  de: "Deutsch",
+  it: "Italiano",
+  pt: "Português",
+  nl: "Nederlands"
+}
+
 export default function QuizPage() {
   const router = useRouter()
   const { id } = router.query
@@ -16,6 +57,7 @@ export default function QuizPage() {
   const [showLeadForm, setShowLeadForm] = useState(false)
   const [leadName, setLeadName] = useState('')
   const [leadPhone, setLeadPhone] = useState('')
+  const [availableLanguages, setAvailableLanguages] = useState([])
 
   useEffect(() => {
     if (!id) return
@@ -86,6 +128,8 @@ export default function QuizPage() {
 
       setQuiz(quizData)
 
+      
+
       console.log("QUIZ DATA:", quizData)
       console.log("LOGO URL:", quizData.logo_url)
 
@@ -105,6 +149,17 @@ export default function QuizPage() {
 
     fetchQuiz()
   }, [id])
+
+    const parentQuizId = quizData.parent_quiz_id || quizData.id
+
+    const { data: relatedQuizzes, error: relatedError } = await supabase
+      .from("quizzes")
+      .select("id, title, language, parent_quiz_id")
+      .or(`id.eq.${parentQuizId},parent_quiz_id.eq.${parentQuizId}`)
+
+    if (!relatedError) {
+      setAvailableLanguages(relatedQuizzes || [])
+    }
 
   const handleChange = (qId, value) => {
     setAnswers((prev) => ({
@@ -216,7 +271,8 @@ export default function QuizPage() {
   const progressPercentage =
     questions.length > 0 ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0
 
-  if (!quiz) return <p>Cargando quiz...</p>
+  if (!quiz) return <p>{es.loading}</p>
+  const t = TEXTS[quiz.language] || TEXTS.es
 
   if (showLeadForm) {
     return (
@@ -398,6 +454,11 @@ export default function QuizPage() {
     )
   }
 
+  const handleLanguageChange = (targetQuizId) => {
+    if (!targetQuizId || targetQuizId === id) return
+    router.push(`/quiz/${targetQuizId}`)
+  }
+
   return (
     <div
       style={{
@@ -420,6 +481,29 @@ export default function QuizPage() {
           boxShadow: '0 6px 20px rgba(0,0,0,0.08)'
         }}
       >
+
+    {availableLanguages.length > 1 && (
+      <div style={{ textAlign: "center", marginBottom: 16 }}>
+        <select
+          value={quiz.id}
+          onChange={(e) => handleLanguageChange(e.target.value)}
+          style={{
+            padding: "8px 12px",
+            borderRadius: 8,
+            border: "1px solid #cbd5e0",
+            background: "#fff",
+            cursor: "pointer"
+          }}
+        >
+          {availableLanguages.map((item) => (
+            <option key={item.id} value={item.id}>
+              {LANGUAGE_LABELS[item.language] || item.language}
+            </option>
+          ))}
+        </select>
+      </div>
+    )}        
+
         {quiz.logo_url && (
           <img
             src={quiz.logo_url}
@@ -464,7 +548,7 @@ export default function QuizPage() {
             marginBottom: 20
           }}
         >
-          Pregunta {currentQuestionIndex + 1} de {questions.length}
+          {t.question} {currentQuestionIndex + 1} {t.of} {questions.length}
         </p>
 
         <div
