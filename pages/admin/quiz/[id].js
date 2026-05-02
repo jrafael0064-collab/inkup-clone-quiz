@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
 import { supabase } from "../../../lib/supabase"
@@ -1584,5 +1584,4 @@ export default function QuizAdmin() {
       ))}
     </div>
   )
->>>>>>> e48d91d (Add quiz language admin tools)
 }
