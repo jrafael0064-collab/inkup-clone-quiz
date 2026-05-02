@@ -22,6 +22,10 @@ export default function QuizAdmin() {
 
   // ✅ NUEVO: estado por pregunta (IMPORTANTE FIX)
   const [optionInputs, setOptionInputs] = useState({})
+   // ✅ NUEVO: creando idioma
+  const [editLanguage, setEditLanguage] = useState("es")
+  const [duplicateLanguage, setDuplicateLanguage] = useState("en")
+ 
 
   useEffect(() => {
     if (!id) return
@@ -37,6 +41,8 @@ export default function QuizAdmin() {
       if (!quizData) return console.error("No se encontró el quiz")
 
       setQuiz(quizData)
+  
+      setEditLanguage(quizData.language || "es")
 
       const { data: questionsData } = await supabase
         .from("questions")
@@ -287,6 +293,79 @@ export default function QuizAdmin() {
     )
   }
 
+  const updateQuizLanguage = async () => {
+    const { error } = await supabase
+      .from("quizzes")
+      .update({ language: editLanguage })
+      .eq("id", id)
+
+    if (error) return alert(error.message)
+
+    setQuiz({
+      ...quiz,
+      language: editLanguage
+    })
+
+    alert("Idioma actualizado")
+  }
+
+  const duplicateQuiz = async () => {
+    if (!duplicateLanguage) return alert("Selecciona un idioma")
+
+    const parentQuizId = quiz.parent_quiz_id || quiz.id
+
+    const { data: newQuizData, error: quizError } = await supabase
+      .from("quizzes")
+      .insert([
+        {
+          title: `${quiz.title} (${duplicateLanguage.toUpperCase()})`,
+          brand_name: quiz.brand_name,
+          logo_url: quiz.logo_url,
+          phone: quiz.phone,
+          language: duplicateLanguage,
+          parent_quiz_id: parentQuizId
+        }
+      ])
+      .select()
+      .single()
+
+    if (quizError) return alert(quizError.message)
+
+    for (const question of questions) {
+      const { data: newQuestionData, error: questionError } = await supabase
+        .from("questions")
+        .insert([
+          {
+            quiz_id: newQuizData.id,
+            question: question.question,
+            type: question.type || "multiple",
+            position: question.position || 0
+          }
+        ])
+        .select()
+        .single()
+
+      if (questionError) return alert(questionError.message)
+
+      const optionsToInsert = (question.options || []).map((opt) => ({
+        question_id: newQuestionData.id,
+        text: opt.text,
+        image_url: opt.image_url
+      }))
+
+      if (optionsToInsert.length > 0) {
+        const { error: optionsError } = await supabase
+          .from("options")
+          .insert(optionsToInsert)
+
+        if (optionsError) return alert(optionsError.message)
+      }
+    }
+
+    alert("Quiz duplicado correctamente. Ahora puedes traducirlo.")
+    router.push(`/admin/quiz/${newQuizData.id}`)
+  }
+
   // -------------------------
   // RENDER
   // -------------------------
@@ -306,6 +385,82 @@ export default function QuizAdmin() {
       <h2 style={{ textAlign: "center", color: "#2d3748", marginTop: 0 }}>
         {quiz.title}
       </h2>
+
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 8,
+          padding: 20,
+          marginBottom: 20,
+          border: "1px solid #e2e8f0"
+        }}
+      >
+        <h3>Idioma del quiz</h3>
+
+        <select
+          value={editLanguage}
+          onChange={(e) => setEditLanguage(e.target.value)}
+          style={{ padding: 10, marginRight: 10 }}
+        >
+          <option value="es">Español</option>
+          <option value="en">Inglés</option>
+          <option value="fr">Francés</option>
+          <option value="de">Alemán</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Portugués</option>
+          <option value="nl">Neerlandés</option>
+        </select>
+
+        <button
+          onClick={updateQuizLanguage}
+          style={{
+            padding: "10px 14px",
+            borderRadius: 6,
+            background: "#3182ce",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer"
+          }}
+        >
+          Guardar idioma
+        </button>
+
+        <hr style={{ margin: "20px 0" }} />
+
+        <h3>Duplicar quiz para otro idioma</h3>
+
+        <select
+          value={duplicateLanguage}
+          onChange={(e) => setDuplicateLanguage(e.target.value)}
+          style={{ padding: 10, marginRight: 10 }}
+        >
+          <option value="en">Inglés</option>
+          <option value="fr">Francés</option>
+          <option value="de">Alemán</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Portugués</option>
+          <option value="nl">Neerlandés</option>
+          <option value="es">Español</option>
+        </select>
+
+        <button
+          onClick={duplicateQuiz}
+          style={{
+            padding: "10px 14px",
+            borderRadius: 6,
+            background: "#38a169",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer"
+          }}
+        >
+          Duplicar quiz
+        </button>
+
+        <p style={{ marginTop: 10, color: "#718096" }}>
+          El duplicado copiará preguntas, opciones, imágenes, logo y teléfono. Después tendrás que traducir los textos manualmente.
+        </p>
+      </div>
 
       <hr style={{ margin: "20px 0" }} />
 
