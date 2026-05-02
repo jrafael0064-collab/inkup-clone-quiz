@@ -128,20 +128,20 @@ export default function QuizPage() {
 
       setQuiz(quizData)
 
-      const parentQuizId = quizData.parent_quiz_id || quizData.id
+      const rootQuizId = quizData.parent_quiz_id || quizData.id
 
       const { data: relatedQuizzes, error: relatedError } = await supabase
         .from("quizzes")
         .select("id, title, language, parent_quiz_id")
-        .or(`id.eq.${parentQuizId},parent_quiz_id.eq.${parentQuizId}`)
-        .order("language", { ascending: true })
+        .or(`id.eq.${rootQuizId},parent_quiz_id.eq.${rootQuizId}`)
 
-
-      console.log("QUIZ ACTUAL:", quizData)
-      console.log("PARENT ID:", parentQuizId)
+      console.log("ROOT QUIZ ID:", rootQuizId)
+      console.log("RELATED ERROR:", relatedError)
       console.log("RELATED QUIZZES:", relatedQuizzes)
 
-      if (!relatedError) {
+      if (relatedError) {
+        console.error("Error cargando idiomas:", relatedError)
+      } else {
         setAvailableLanguages(relatedQuizzes || [])
       }
 
@@ -163,7 +163,7 @@ export default function QuizPage() {
     }
 
     fetchQuiz()
- }, [id])
+  }, [id])
 
 
   const handleChange = (qId, value) => {
@@ -487,7 +487,7 @@ export default function QuizPage() {
         }}
       >
 
-      {availableLanguages.length > 1 && (
+      {availableLanguages.length > 0 && (
         <div style={{ textAlign: "center", marginBottom: 16 }}>
           <select
             value={quiz.id}
