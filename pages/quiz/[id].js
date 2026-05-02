@@ -273,7 +273,7 @@ export default function QuizPage() {
   const progressPercentage =
     questions.length > 0 ? ((currentQuestionIndex + 1) / questions.length) * 100 : 0
 
-  if (!quiz) return <p>{es.loading}</p>
+  if (!quiz) return <p>Cargando...</p>
   const t = TEXTS[quiz.language] || TEXTS.es
 
   if (showLeadForm) {
