@@ -482,27 +482,27 @@ export default function QuizPage() {
         }}
       >
 
-    {availableLanguages.length > 1 && (
-      <div style={{ textAlign: "center", marginBottom: 16 }}>
-        <select
-          value={quiz.id}
-          onChange={(e) => handleLanguageChange(e.target.value)}
-          style={{
-            padding: "8px 12px",
-            borderRadius: 8,
-            border: "1px solid #cbd5e0",
-            background: "#fff",
-            cursor: "pointer"
-          }}
-        >
-          {availableLanguages.map((item) => (
-            <option key={item.id} value={item.id}>
-              {LANGUAGE_LABELS[item.language] || item.language}
-            </option>
-          ))}
-        </select>
-      </div>
-    )}        
+      {availableLanguages.length > 1 && (
+        <div style={{ textAlign: "center", marginBottom: 16 }}>
+          <select
+            value={quiz.id}
+            onChange={(e) => handleLanguageChange(e.target.value)}
+            style={{
+              padding: "8px 12px",
+              borderRadius: 8,
+              border: "1px solid #cbd5e0",
+              background: "#fff",
+              cursor: "pointer"
+            }}
+          >
+            {availableLanguages.map((item) => (
+              <option key={item.id} value={item.id}>
+                {LANGUAGE_LABELS[item.language] || item.language}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}        
 
         {quiz.logo_url && (
           <img
