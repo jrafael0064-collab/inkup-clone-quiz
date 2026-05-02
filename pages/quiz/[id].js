@@ -161,6 +161,10 @@ export default function QuizPage() {
       setAvailableLanguages(relatedQuizzes || [])
     }
 
+    console.log("QUIZ ACTUAL:", quizData)
+    console.log("PARENT ID:", parentQuizId)
+    console.log("RELATED QUIZZES:", relatedQuizzes)
+
   const handleChange = (qId, value) => {
     setAnswers((prev) => ({
       ...prev,
