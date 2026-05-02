@@ -128,7 +128,22 @@ export default function QuizPage() {
 
       setQuiz(quizData)
 
-      
+      const parentQuizId = quizData.parent_quiz_id || quizData.id
+
+      const { data: relatedQuizzes, error: relatedError } = await supabase
+        .from("quizzes")
+        .select("id, title, language, parent_quiz_id")
+        .or(`id.eq.${parentQuizId},parent_quiz_id.eq.${parentQuizId}`)
+        .order("language", { ascending: true })
+
+
+      console.log("QUIZ ACTUAL:", quizData)
+      console.log("PARENT ID:", parentQuizId)
+      console.log("RELATED QUIZZES:", relatedQuizzes)
+
+      if (!relatedError) {
+        setAvailableLanguages(relatedQuizzes || [])
+      }
 
       console.log("QUIZ DATA:", quizData)
       console.log("LOGO URL:", quizData.logo_url)
@@ -148,22 +163,8 @@ export default function QuizPage() {
     }
 
     fetchQuiz()
-  }, [id])
+    }, [id])
 
-    const parentQuizId = quizData.parent_quiz_id || quizData.id
-
-    const { data: relatedQuizzes, error: relatedError } = await supabase
-      .from("quizzes")
-      .select("id, title, language, parent_quiz_id")
-      .or(`id.eq.${parentQuizId},parent_quiz_id.eq.${parentQuizId}`)
-
-    if (!relatedError) {
-      setAvailableLanguages(relatedQuizzes || [])
-    }
-
-    console.log("QUIZ ACTUAL:", quizData)
-    console.log("PARENT ID:", parentQuizId)
-    console.log("RELATED QUIZZES:", relatedQuizzes)
 
   const handleChange = (qId, value) => {
     setAnswers((prev) => ({
