@@ -9,6 +9,7 @@ export default function Admin() {
   const [brandName, setBrandName] = useState('')
   const [logoUrl, setLogoUrl] = useState('')
   const [logoFile, setLogoFile] = useState(null)
+  const [language, setLanguage] = useState('es')
 
   const handleLogout = async () => {
     await fetch("/api/admin-logout", { method: "POST" })
@@ -58,7 +59,8 @@ export default function Admin() {
       .insert([{
         title,
         brand_name: brandName,
-        logo_url: uploadedLogoUrl
+        logo_url: uploadedLogoUrl,
+        language
       }])
       .select()
 
@@ -102,6 +104,22 @@ export default function Admin() {
       >
         Salir
       </button>
+
+      <select
+        value={language}
+        onChange={(e) => setLanguage(e.target.value)}
+        style={{ padding: 10, marginRight: 10, marginBottom: 10 }}
+      >
+        <option value="es">Español</option>
+        <option value="en">Inglés</option>
+        <option value="fr">Francés</option>
+        <option value="de">Alemán</option>
+        <option value="it">Italiano</option>
+        <option value="pt">Portugués</option>
+        <option value="nl">Neerlandés</option>
+      </select>
+
+      <br />
 
       <div style={{ marginBottom: 40 }}>
         <h2>Crear nuevo quiz</h2>
