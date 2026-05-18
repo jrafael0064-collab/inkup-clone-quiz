@@ -8,6 +8,7 @@ export default function QuizAdmin() {
   const { id } = router.query
 
   const [quiz, setQuiz] = useState(null)
+  const [editTitle, setEditTitle] = useState("")
   const [questions, setQuestions] = useState([])
 
   const [newQuestion, setNewQuestion] = useState("")
@@ -44,6 +45,7 @@ export default function QuizAdmin() {
       if (!quizData) return console.error("No se encontró el quiz")
 
       setQuiz(quizData)
+      setEditTitle(quizData.title || "")
 
       const rootQuizId = quizData.parent_quiz_id || quizData.id
 
@@ -322,6 +324,22 @@ export default function QuizAdmin() {
     alert("Idioma actualizado")
   }
 
+  const updateQuizTitle = async () => {
+    const { error } = await supabase
+      .from("quizzes")
+      .update({ title: editTitle })
+      .eq("id", id)
+
+    if (error) return alert(error.message)
+
+    setQuiz({
+      ...quiz,
+      title: editTitle
+    })
+
+    alert("Título actualizado")
+  }
+
   const duplicateQuiz = async () => {
     if (isDuplicating) return
 
@@ -430,6 +448,44 @@ export default function QuizAdmin() {
       <h2 style={{ textAlign: "center", color: "#2d3748", marginTop: 0 }}>
         {quiz.title}
       </h2>
+
+      <div
+        style={{
+          background: "#fff",
+          padding: 20,
+          borderRadius: 8,
+          marginBottom: 20,
+          border: "1px solid #e2e8f0"
+        }}
+      >
+        <h3>Título del quiz</h3>
+
+        <input
+          value={editTitle}
+          onChange={(e) => setEditTitle(e.target.value)}
+          style={{
+            width: "100%",
+            padding: 10,
+            borderRadius: 6,
+            border: "1px solid #cbd5e0",
+            marginBottom: 10
+          }}
+        />
+
+        <button
+          onClick={updateQuizTitle}
+          style={{
+            padding: "10px 14px",
+            borderRadius: 6,
+            background: "#3182ce",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer"
+          }}
+        >
+          Guardar título
+        </button>
+      </div>
 
       <div
         style={{
