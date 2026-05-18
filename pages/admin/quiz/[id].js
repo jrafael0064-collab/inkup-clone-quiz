@@ -26,6 +26,8 @@ export default function QuizAdmin() {
    // ✅ NUEVO: creando idioma
   const [editLanguage, setEditLanguage] = useState("es")
   const [duplicateLanguage, setDuplicateLanguage] = useState("en")
+  const [relatedQuizzes, setRelatedQuizzes] = useState([])
+  const [isDuplicating, setIsDuplicating] = useState(false)
  
 
   useEffect(() => {
@@ -42,6 +44,17 @@ export default function QuizAdmin() {
       if (!quizData) return console.error("No se encontró el quiz")
 
       setQuiz(quizData)
+
+      const rootQuizId = quizData.parent_quiz_id || quizData.id
+
+      const { data: relatedData, error: relatedError } = await supabase
+        .from("quizzes")
+        .select("id, title, language, parent_quiz_id")
+        .or(`id.eq.${rootQuizId},parent_quiz_id.eq.${rootQuizId}`)
+
+      if (!relatedError) {
+        setRelatedQuizzes(relatedData || [])
+      }
   
       setEditLanguage(quizData.language || "es")
 
@@ -274,7 +287,6 @@ export default function QuizAdmin() {
   // -------------------------
   // OPTIONS CRUD
   // -------------------------
-
   const deleteOption = async (optId, qId) => {
     if (!confirm("¿Seguro que quieres borrar esta opción?")) return
 
@@ -311,9 +323,38 @@ export default function QuizAdmin() {
   }
 
   const duplicateQuiz = async () => {
+    if (isDuplicating) return
+
     if (!duplicateLanguage) return alert("Selecciona un idioma")
 
-    const parentQuizId = quiz.parent_quiz_id || quiz.id
+    setIsDuplicating(true)
+
+    try {
+
+      const parentQuizId = quiz.parent_quiz_id || quiz.id
+
+      const { data: existingVersions, error: existingError } = await supabase
+        .from("quizzes")
+        .select("id, language")
+        .or(`id.eq.${parentQuizId},parent_quiz_id.eq.${parentQuizId}`)
+
+      if (existingError) {
+        alert(existingError.message)
+        setIsDuplicating(false)
+        return
+      }
+
+      const languageAlreadyExists = existingVersions?.some(
+        (item) => item.language === duplicateLanguage
+      )
+
+      if (languageAlreadyExists) {
+        alert("Ya existe una versión de este quiz en ese idioma")
+        setIsDuplicating(false)
+        return
+      }
+
+      // aquí sigue tu código actual de crear quiz...  
 
     const { data: newQuizData, error: quizError } = await supabase
       .from("quizzes")
@@ -365,7 +406,10 @@ export default function QuizAdmin() {
 
     alert("Quiz duplicado correctamente. Ahora puedes traducirlo.")
     router.push(`/admin/quiz/${newQuizData.id}`)
-  }
+    } finally {
+      setIsDuplicating(false)
+    }
+  }  
 
   // -------------------------
   // RENDER
@@ -444,18 +488,24 @@ export default function QuizAdmin() {
           <option value="es">Español</option>
         </select>
 
+        <p style={{ marginTop: 10, color: "#4a5568" }}>
+          Idiomas ya creados:{" "}
+          {relatedQuizzes.map((item) => item.language.toUpperCase()).join(", ")}
+        </p>
+
         <button
           onClick={duplicateQuiz}
+          disabled={isDuplicating}
           style={{
             padding: "10px 14px",
             borderRadius: 6,
-            background: "#38a169",
+            background: isDuplicating ? "#a0aec0" : "#38a169",
             color: "#fff",
             border: "none",
-            cursor: "pointer"
+            cursor: isDuplicating ? "not-allowed" : "pointer"
           }}
         >
-          Duplicar quiz
+          {isDuplicating ? "Duplicando..." : "Duplicar quiz"}
         </button>
 
         <p style={{ marginTop: 10, color: "#718096" }}>
