@@ -30,7 +30,14 @@ Descubre el tuyo en 1 minuto 👇
 
 👉 y abajo tu link:
 
-https://inkup-clone-quiz.vercel.app/quiz/TU_ID
+https://getinkflow.vercel.app/admin
+
+https://getinkflow.vercel.app/quiz/1a11f611-787e-4748-ad0e-fae245f5512d
+
+https://getinkflow.vercel.app/admin/quiz/1a11f611-787e-4748-ad0e-fae245f5512d
+
+https://getinkflow.vercel.app/admin/leads
+
 👉 Botón de contacto (MUY IMPORTANTE)
 
 En Instagram:
