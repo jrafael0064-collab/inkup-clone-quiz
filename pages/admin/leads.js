@@ -366,9 +366,68 @@ export default function AdminLeads() {
               transition: "all 0.2s ease"
             }}
           >
-            <p><strong>Nombre:</strong> {lead.name || "Sin nombre"}</p>
-            <p><strong>Teléfono:</strong> {lead.phone || "Sin teléfono"}</p>
-            <p><strong>Quiz:</strong> {quizzes.find((q) => q.id === lead.quiz_id)?.title || lead.quiz_id}</p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                gap: 20,
+                marginBottom: 18,
+                flexWrap: "wrap"
+              }}
+            >
+              <div>
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: 24,
+                    color: "#1a202c"
+                  }}
+                >
+                  {lead.name || "Sin nombre"}
+                </h2>
+
+                <p
+                  style={{
+                    margin: "6px 0 0",
+                    color: "#718096",
+                    fontSize: 15
+                  }}
+                >
+                  {lead.phone || "Sin teléfono"}
+                </p>
+
+                <p
+                  style={{
+                    margin: "10px 0 0",
+                    color: "#4a5568",
+                    fontWeight: "600"
+                  }}
+                >
+                  {quizzes.find((q) => q.id === lead.quiz_id)?.title || lead.quiz_id}
+                </p>
+              </div>
+
+              <div
+                style={{
+                  padding: "8px 14px",
+                  borderRadius: 999,
+                  background:
+                    (lead.status || "nuevo") === "nuevo"
+                      ? "#ebf8ff"
+                      : lead.status === "contactado"
+                      ? "#fffaf0"
+                      : "#f0fff4",
+                  color: getStatusColor(lead.status || "nuevo"),
+                  fontWeight: "bold",
+                  fontSize: 13,
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5
+                }}
+              >
+                {lead.status || "nuevo"}
+              </div>
+            </div>
 
             <div
               style={{
