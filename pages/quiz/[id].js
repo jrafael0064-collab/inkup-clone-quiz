@@ -255,20 +255,20 @@ export default function QuizPage() {
 
     setSubmitted(true)
 
-    let msg = `Hola! 👋 He completado el quiz de "${quiz.title}" y me gustaría que me orientaras con una propuesta de tatuaje.%0A%0A`
+    let msg = `Hola! 👋 He completado el quiz de "${quiz.title}" y me gustaría que me orientaras con una propuesta de tatuaje.\n\n`
 
-    msg += `🧑 Nombre: ${leadName}%0A`
-    msg += `📱 WhatsApp: ${leadPhone}%0A%0A`
-    msg += `💡 Idea que tengo:%0A`
+    msg += `🧑 Nombre: ${leadName}\n`
+    msg += `📱 WhatsApp: ${leadPhone}\n\n`
+    msg += `💡 Idea que tengo:\n`
 
     Object.keys(answers).forEach((qId) => {
       const q = questions.find((qq) => String(qq.id) === String(qId))
       if (q) {
-        msg += `• ${answers[qId]}%0A`
+        msg += `• ${answers[qId]}\n`
       }
     })
 
-    msg += `%0A🔥 Busco algo que encaje bien conmigo, ¿cómo lo harías tú?`
+    msg += `\n🔥 Busco algo que encaje bien conmigo, ¿cómo lo harías tú?`
 
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
     const encodedMsg = encodeURIComponent(msg)
