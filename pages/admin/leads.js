@@ -341,16 +341,46 @@ export default function AdminLeads() {
           <div
             key={lead.id}
             style={{
-              marginBottom: 20,
-              padding: 18,
-              borderRadius: 12,
-              background: "#fff",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
+              marginBottom: 24,
+              padding: 24,
+              borderRadius: 20,
+              background: "#ffffff",
+              border:
+                (lead.status || "nuevo") === "nuevo"
+                  ? "2px solid #3182ce"
+                  : "1px solid #e2e8f0",
+              boxShadow:
+                (lead.status || "nuevo") === "nuevo"
+                  ? "0 10px 30px rgba(49,130,206,0.12)"
+                  : "0 6px 20px rgba(0,0,0,0.06)",
+              transition: "all 0.2s ease"
             }}
           >
             <p><strong>Nombre:</strong> {lead.name || "Sin nombre"}</p>
             <p><strong>Teléfono:</strong> {lead.phone || "Sin teléfono"}</p>
             <p><strong>Quiz:</strong> {quizzes.find((q) => q.id === lead.quiz_id)?.title || lead.quiz_id}</p>
+
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "6px 12px",
+                borderRadius: 999,
+                background:
+                  (lead.status || "nuevo") === "nuevo"
+                    ? "#ebf8ff"
+                    : lead.status === "contactado"
+                    ? "#fffaf0"
+                    : "#f0fff4",
+                color: getStatusColor(lead.status || "nuevo"),
+                fontWeight: "bold",
+                fontSize: 13,
+                marginTop: 8,
+                marginBottom: 12
+              }}
+            >
+              {(lead.status || "nuevo").toUpperCase()}
+            </div>
 
             <div style={{ marginTop: 10, marginBottom: 10 }}>
               <p style={{ marginBottom: 6 }}><strong>Estado:</strong></p>
