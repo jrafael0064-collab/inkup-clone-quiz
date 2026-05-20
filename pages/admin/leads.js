@@ -210,7 +210,10 @@ export default function AdminLeads() {
       radial-gradient(circle at 25px 25px, rgba(0,0,0,0.025) 2%, transparent 0%),
       radial-gradient(circle at 75px 75px, rgba(0,0,0,0.02) 2%, transparent 0%)
       `,
-      backgroundSize: "100px 100px", minHeight: "100vh" }}>
+      backgroundSize: "100px 100px",
+      minHeight: "100vh"
+      }}
+    >
       <h1 style={{ marginBottom: 20 }}>Leads del Quiz</h1>
 
       <div
