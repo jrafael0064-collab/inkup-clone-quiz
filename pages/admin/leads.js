@@ -209,10 +209,9 @@ export default function AdminLeads() {
         padding: 30, 
         backgroundColor: "#f8fafc",
         backgroundImage: `
-          radial-gradient(circle at 25px 25px, rgba(0,0,0,0.025) 2%, transparent 0%),
-          radial-gradient(circle at 75px 75px, rgba(0,0,0,0.02) 2%, transparent 0%)
+          radial-gradient(circle at 50% 100%, rgba(0,0,0,0.06) 24%, transparent 25%)
         `,
-        backgroundSize: "100px 100px",
+        backgroundSize: "80px 40px",    
         minHeight: "100vh"
       }}
     >
