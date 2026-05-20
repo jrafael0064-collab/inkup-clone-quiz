@@ -205,7 +205,8 @@ export default function AdminLeads() {
 
   return (
     <div 
-      style={{ padding: 30, 
+      style={{ 
+        padding: 30, 
         backgroundColor: "#f8fafc",
         backgroundImage: `
           radial-gradient(circle at 25px 25px, rgba(0,0,0,0.025) 2%, transparent 0%),
