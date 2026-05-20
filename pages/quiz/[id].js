@@ -238,17 +238,27 @@ export default function QuizPage() {
       return
     }
 
-    await fetch("/api/send-telegram", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name: leadName,
-        phone: leadPhone,
-        quizId: id
+    try {
+      console.log("ENVIANDO TELEGRAM...")
+
+      const telegramResponse = await fetch("/api/send-telegram", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: leadName,
+          phone: leadPhone,
+          quizId: id
+        })
       })
-    })
+
+      const telegramData = await telegramResponse.json()
+
+      console.log("RESPUESTA TELEGRAM FRONT:", telegramData)
+    } catch (telegramError) {
+      console.error("ERROR FRONT TELEGRAM:", telegramError)
+    }  
 
     localStorage.removeItem(`quiz_answers_${id}`)
     localStorage.removeItem(`quiz_session_${id}`)
