@@ -8,7 +8,9 @@ export default async function handler(req, res) {
 
     const botToken = process.env.TELEGRAM_BOT_TOKEN
     const chatId = process.env.TELEGRAM_CHAT_ID
-
+    
+    console.log("BOT TOKEN:", botToken)
+    console.log("CHAT ID:", chatId) 
     const adminUrl = "https://getinkflow.vercel.app/admin/leads"
 
     const message = `
