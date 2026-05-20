@@ -204,7 +204,7 @@ export default function AdminLeads() {
   const archivedCount = leads.filter((lead) => lead.status === "archived").length
 
   return (
-    <div style={{ padding: 30, background: "#f7fafc", minHeight: "100vh" }}>
+    <div style={{ padding: 30, background: "linear-gradient(135deg, #111827 0%, #1f2937 100%)", minHeight: "100vh" }}>
       <h1 style={{ marginBottom: 20 }}>Leads del Quiz</h1>
 
       <div
