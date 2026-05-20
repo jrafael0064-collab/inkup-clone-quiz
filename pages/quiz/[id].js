@@ -233,6 +233,11 @@ export default function QuizPage() {
         }
       ])
 
+    if (error) {
+      alert("Error: " + error.message)
+      return
+    }
+
     await fetch("/api/send-telegram", {
       method: "POST",
       headers: {
@@ -243,12 +248,7 @@ export default function QuizPage() {
         phone: leadPhone,
         quizId: id
       })
-    })   
-
-    if (error) {
-      alert("Error: " + error.message)
-      return
-    }
+    })
 
     localStorage.removeItem(`quiz_answers_${id}`)
     localStorage.removeItem(`quiz_session_${id}`)
@@ -270,11 +270,8 @@ export default function QuizPage() {
 
     msg += `\n🔥 Busco algo que encaje bien conmigo, ¿cómo lo harías tú?`
 
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
     const encodedMsg = encodeURIComponent(msg)
-    const url = isMobile
-      ? `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMsg}`
-      : `https://web.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMsg}`
+    const url = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMsg}`
 
     window.location.href = url
   }
