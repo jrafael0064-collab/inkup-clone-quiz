@@ -13,23 +13,15 @@ export default function AdminLeads() {
 
   useEffect(() => {
     const fetchData = async () => {
-      let query = supabase
-        .from("answers")
-        .select("*")
+      const leadsResponse = await fetch("/api/admin-leads")
+      const leadsJson = await leadsResponse.json()
 
-      if (selectedStatus) {
-        query = query.eq("status", selectedStatus)
-      } else {
-        query = query.neq("status", "archivados")
-      }
-
-      const { data: leadsData, error: leadsError } = await query
-        .order("created_at", { ascending: false })
-
-      if (leadsError) {
-        console.error("Error cargando leads:", leadsError)
+      if (!leadsResponse.ok) {
+        console.error("Error cargando leads:", leadsJson)
         return
       }
+
+      const leadsData = leadsJson.leads || []
 
       const { data: quizzesData, error: quizzesError } = await supabase
         .from("quizzes")
