@@ -485,7 +485,7 @@ export default function QuizPage() {
       style={{
         padding: 20,
         fontFamily: 'Arial, sans-serif',
-        background: 'linear-gradient(120deg, #fefefe, #e2e8f0)',
+        background: 'linear-gradient(120deg, #bde5e5, #bde5e5)',
         minHeight: '100vh',
         display: 'flex',
         justifyContent: 'center',
@@ -595,7 +595,7 @@ export default function QuizPage() {
         <div
           style={{
             padding: 20,
-            background: '#f8fafc',
+            background: '#bde5e5',
             borderRadius: 12,
             marginBottom: 25
           }}
@@ -672,6 +672,22 @@ export default function QuizPage() {
                 )
               })}
             </div>
+          ) : currentQuestion.type === "text" ? (
+            <textarea
+              value={currentAnswer || ""}
+              onChange={(e) => handleChange(currentQuestion.id, e.target.value)}
+              placeholder="Escribe aquí cualquier detalle importante..."
+              style={{
+                width: "100%",
+                minHeight: 120,
+                padding: 14,
+                borderRadius: 12,
+                border: "1px solid #cbd5e0",
+                fontSize: 16,
+                resize: "vertical",
+                marginTop: 12
+              }}
+            />
           ) : (
             <input
               type="text"
