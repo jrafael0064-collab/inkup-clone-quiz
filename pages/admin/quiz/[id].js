@@ -440,7 +440,7 @@ export default function QuizAdmin() {
       style={{
         padding: 40,
         fontFamily: "Arial, sans-serif",
-        background: "#f0f4f8",
+        background: "#bde5e5",
         minHeight: "100vh"
       }}
     >
